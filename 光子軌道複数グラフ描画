@@ -1,0 +1,261 @@
+'''複数軌道のグラフ描画'''
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+
+def f1(u,v,phi):
+    return -u1 + 3/2* u1 ** 2
+
+def f2(u,v,phi):
+    return -u2 + 3/2* u2 ** 2
+
+def f3(u,v,phi):
+    return -u3 + 3/2* u3 ** 2
+
+def f4(u,v,phi):
+    return -u4 + 3/2* u4 ** 2
+
+
+
+
+dphi = 1e-3
+
+
+'''軌道1の初期条件'''
+phipoints1 = []
+upoints1 = []
+vpoints1= []
+rpoints1 = []
+wpoints1 = []
+xpoints1 = []
+ypoints1 = []
+phi1=0
+r1 = 10
+print("①初期位置(r0,phi0)")
+print(r1,phi1)
+x1 = r1*np.cos(phi1)
+y1 = r1*np.sin(phi1)
+u1 = 1/r1
+w1 =-36.397
+print("②放射方向dr/dphi")
+print(w1)
+v1 = - u1 ** 2 *w1
+
+'''軌道2の初期条件'''
+phipoints2=[]
+upoints2 = []
+vpoints2 = []
+rpoints2 = []
+wpoints2 = []
+xpoints2 = []
+ypoints2 = []
+phi2=np.pi/2
+r2 = 10
+print("①初期位置(r0,phi0)")
+print(r2,phi2)
+x2 = r2*np.cos(phi2)
+y2 = r2*np.sin(phi2)
+u2 = 1/r2
+w2 = -32.7519
+print("②放射方向dr/dφ")
+print(w2)
+v2 = - u2 ** 2 *w2
+
+'''軌道3の初期条件'''
+phipoints3=[]
+upoints3 = []
+vpoints3= []
+rpoints3 = []
+wpoints3 = []
+xpoints3 = []
+ypoints3 = []
+r3 = 10
+phi3=np.pi
+print("①初期位置(r0,phi0)")
+print(r3,phi3)
+x3 = r3*np.cos(phi3)
+y3 = r3*np.sin(phi3)
+u3 = 1/r3
+w3 = -16.54599
+print("②放射方向dr/dφ")
+print(np.arctan(w3))
+v3 = - u3 ** 2 *w3
+
+'''軌道4の初期条件'''
+phipoints4=[]
+upoints4 = []
+vpoints4= []
+rpoints4 = []
+wpoints4 = []
+xpoints4 = []
+ypoints4 = []
+phi4=3*np.pi/2
+r4 = 10
+print("①初期位置(r0,phi0)")
+print(r4,phi4)
+x4 = r4*np.cos(phi4)
+y4 = r4*np.sin(phi4)
+u4 = 1/r4
+w4 = 0.951218
+print("②放射方向dr/dφ")
+print(w4)     
+v4 = - u4 ** 2 *w4
+
+
+'''軌道1のRunge-Kutta'''
+j = 0
+while(r1 < 1e3):
+    #if j%1e10 == 0:
+    phipoints1.append(phi1)
+    upoints1.append(u1)
+    vpoints1.append(v1)
+    rpoints1.append(r1)
+    wpoints1.append(w1)
+    xpoints1.append(x1)
+    ypoints1.append(y1)
+  
+    k1v1 =f1(u1,v1,phi1)*dphi
+    k1u1 = v1 * dphi
+
+    k2v1 =  f1(u1+k1u1/2, v1+k1v1/2, phi1+dphi/2 )*dphi
+    k2u1 =(v1+k1v1/2)*dphi
+
+    k3v1 =f1(u1+k2u1/2, v1+k2v1/2, phi1+dphi/2 )*dphi
+    k3u1 =(v1+k2v1/2 ) *dphi 
+    
+    k4v1 = f1(u1+k3u1, v1+k3v1, phi1+dphi )*dphi
+    k4u1 = (v1+k3v1 )*dphi
+
+
+    v1 += (k1v1 + 2 * k2v1 + 2* k3v1 + k4v1)/6
+    u1 += (k1u1 + 2 * k2u1 + 2* k3u1 + k4u1)/6
+    r1 = 1 / u1
+    w1 = - u1 ** 2 * w1
+    x1 = r1*np.cos(phi1)
+    y1 = r1*np.sin(phi1)
+    phi1 += dphi
+
+
+'''軌道2のRunge-Kutta'''
+k = 0    
+while(r2 < 1e3):    
+    if k%1e10 == 0:   
+        phipoints2.append(phi2)
+        upoints2.append(u2)
+        vpoints2.append(v2)
+        rpoints2.append(r2)
+        wpoints2.append(w2)
+        xpoints2.append(x2)
+        ypoints2.append(y2)
+        
+    k1v2 =f2(u2,v2,phi2)*dphi
+    k1u2 = v2 * dphi
+
+    k2v2 =  f2(u2+k1u2/2, v2+k1v2/2, phi2+dphi/2 )*dphi
+    k2u2 =(v2+k1v2/2)*dphi
+
+    k3v2 =f2(u2+k2u2/2, v2+k2v2/2, phi2+dphi/2 )*dphi
+    k3u2 =(v2+k2v2/2 ) *dphi 
+    
+    k4v2 = f2(u2+k3u2, v2+k3v2, phi2+dphi )*dphi
+    k4u2 = (v2+k3v2 )*dphi
+
+
+    v2 += (k1v2 + 2 * k2v2 + 2* k3v2+ k4v2)/6
+    u2 += (k1u2+ 2 * k2u2 + 2* k3u2 + k4u2)/6
+    r2 = 1 / u2
+    w2 = - u2** 2 * w2
+    x2 = r2*np.cos(phi2)
+    y2 = r2*np.sin(phi2)
+    phi2 += dphi 
+
+'''軌道3のRunge-Kutta'''      
+l =0    
+while(r3 < 1e3):    
+    if l%1e10 == 0:    
+    
+        phipoints3.append(phi3)
+        upoints3.append(u3)
+        vpoints3.append(v3)
+        rpoints3.append(r3)
+        wpoints3.append(w3)
+        xpoints3.append(x3)
+        ypoints3.append(y3)    
+    k1v3 =f3(u3,v3,phi3)*dphi
+    k1u3 = v3 * dphi
+
+    k2v3 =  f3(u3+k1u3/2, v3+k1v3/2, phi3+dphi/2 )*dphi
+    k2u3 =(v3+k1v3/2)*dphi
+
+    k3v3 =f3(u3+k2u3/2, v3+k2v3/2, phi3+dphi/2 )*dphi
+    k3u3 =(v3+k2v3/2 ) *dphi 
+    
+    k4v3 = f3(u3+k3u3, v3+k3v3, phi3+dphi )*dphi
+    k4u3 = (v3+k3v3 )*dphi
+
+
+    v3 += (k1v3 + 2 * k2v3 + 2* k3v3 + k4v3)/6
+    u3 += (k1u3 + 2 * k2u3 + 2* k3u3 + k4u3)/6
+    r3 = 1 / u3
+    w3 = - u3 ** 2 * w3
+    x3 = r3*np.cos(phi3)
+    y3 = r3*np.sin(phi3)
+    phi3 += dphi
+
+'''軌道4のRunge-Kutta'''      
+m = 0
+while(r4< 1e3):    
+    if m%1e10 == 0:       
+        phipoints4.append(phi4)
+        upoints4.append(u4)
+        vpoints4.append(v4)
+        rpoints4.append(r4)
+        wpoints4.append(w4)
+        xpoints4.append(x4)
+        ypoints4.append(y4)    
+    k1v4 =f4(u4,v4,phi4)*dphi
+    k1u4 = v4 * dphi
+
+    k2v4 =  f4(u4+k1u4/2, v4+k1v4/2, phi4+dphi/2 )*dphi
+    k2u4 =(v4+k1v4/2)*dphi
+
+    k3v4 =f4(u4+k2u4/2, v4+k2v4/2, phi4+dphi/2 )*dphi
+    k3u4 =(v4+k2v4/2 ) *dphi 
+    
+    k4v4 = f4(u4+k3u4, v4+k3v4, phi4+dphi )*dphi
+    k4u4 = (v4+k3v4 )*dphi
+
+
+    v4 += (k1v4 + 2 * k2v4 + 2* k3v4 + k4v4)/6
+    u4 += (k1u4 + 2 * k2u4 + 2* k3u4 + k4u4)/6
+    r4 = 1 / u4
+    w4 = - u4 ** 2 * w4
+    x4 = r4*np.cos(phi4)
+    y4 = r4*np.sin(phi4)
+    phi4 += dphi
+
+
+'''グラフ描画(y-xグラフ)'''
+plt.plot (xpoints1,ypoints1, 'o',label='path1',markersize=1)
+plt.plot (xpoints2,ypoints2, 'o',label='path2',markersize=1)
+plt.plot (xpoints3, ypoints3, 'o',label='path3',markersize=1)
+plt.plot (xpoints4, ypoints4, 'o',label='path4',markersize=1)
+'''半径10の円'''
+c1,c2 = [],[]
+for _c1 in np.linspace(-180,180,360):
+    c1.append(10*math.sin(math.radians(_c1)))
+    c2.append(10*math.cos(math.radians(_c1)))
+    
+plt.plot(c1,c2,linestyle="dotted")
+plt.xlabel("x",  fontsize=24)
+plt.ylabel("y",  fontsize=24,)
+
+plt.legend(loc='upper right')
+plt.grid()
+plt.xlim(-15,50)
+plt.ylim(-15,15)
+g = plt.subplot()
+g.set_aspect('equal')
+#plt.savefig('figure1.png')
+plt.show()
