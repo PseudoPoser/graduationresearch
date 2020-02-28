@@ -1,0 +1,121 @@
+'''ブラックホール近傍で放射された光子の軌道シミュレーション'''
+
+import numpy as np
+import matplotlib.pyplot as plt
+ 
+
+"""
+u =r_s/r
+v = du/dφ
+w = dr/dφ
+"""
+'''規格化された軌道の方程式'''
+def f(u,v,phi):
+    return -u + 3/2* u ** 2
+
+'''1個目の軌道における放射方向dr/dφ'''
+w0 = float(input("放射方向dr/dφの初期値を入力してください: dr/dφ ="))
+
+'''初期条件(r0,φ0,dr/dφ,arctan(w0))、十分遠方でのy、phi
+arctan(w0)は放射方向dr/dφをラジアンに換算する式'''
+
+a = np.array(["r0","phi0","dr/dphi0","arctan(w0)","y_inf","phi_inf"])
+
+'''繰り返し回数N'''
+N =1
+
+for i in range(0,1,N):
+
+    phipoints = []
+    upoints = []
+    vpoints = []
+    rpoints = []
+    wpoints = []
+    xpoints = []
+    ypoints = []
+
+ 
+    '''初期距離r0'''
+    r0 = 30
+    '''初期角度φ0'''
+    phi0 =0
+    '''1軌道ごとのφの刻み'''
+    dphi = 1e-6
+    phi = phi0
+    '''x-y座標での初期位置'''
+    x0 = r0*np.cos(phi)
+    y0 = r0*np.sin(phi)
+    u0 = 1/r0
+    '''軌道間の放射方向dr/dφの刻み'''
+    w0 = w0 + i*1e-5
+    #print("②方位角方向に対する運動方向の初期角度は")
+    #print(np.arctan(w0))
+    v0 = - u0 ** 2 *w0
+
+
+    r, u, v, w ,x,y =r0, u0, v0, w0, x0, y0 
+
+
+    j = 0
+
+    '''十分遠方とみなす値r_inf'''
+    r_inf = 1e6
+    while r < r_inf:
+        '''listに入れるデータをM回ごとに1個にする'''
+        M = 100
+        if  j % M == 0:
+            phipoints.append(phi)
+            upoints.append(u)
+            vpoints.append(v)
+            rpoints.append(r)
+            wpoints.append(w)
+            xpoints.append(x)
+            ypoints.append(y)
+        
+        '''Runge-Kutta法'''
+        k1v =f(u,v,phi)*dphi
+        k1u = v * dphi
+
+        k2v =  f(u+k1u/2, v+k1v/2, phi+dphi/2 )*dphi
+        k2u =(v+k1v/2)*dphi
+
+        k3v =f(u+k2u/2, v+k2v/2, phi+dphi/2 )*dphi
+        k3u =(v+k2v/2 ) *dphi 
+    
+        k4v = f(u+k3u, v+k3v, phi+dphi )*dphi
+        k4u = (v+k3v )*dphi
+
+
+        v += (k1v + 2 * k2v + 2* k3v + k4v)/6
+        u += (k1u + 2 * k2u + 2* k3u + k4u)/6
+        r = 1 / u
+        w = - u ** 2 * w
+        x = r*np.cos(phi)
+        y = r*np.sin(phi)
+        phi += dphi
+        j += 1
+    a = np.vstack((a,[r0,phi0,w0,np.arctan(w0),y,phi]))
+
+'''グラフの描画　N=1のときのみ推奨'''
+    '''r-φグラフ'''
+    plt.plot (phipoints, rpoints, 'o',label='4th order Runge-Kutta')
+    plt.xlabel("phi",  fontsize=24)
+    plt.ylabel("r(phi)",  fontsize=24)
+    plt.legend(loc='upper right')
+    #plt.xlim(-np.pi,2*np.pi)
+    #plt.ylim(-10,10)
+    plt.grid()
+    plt.show()
+    #plt.savefig('figure1.png')
+
+    '''y-xグラフ'''
+    plt.plot (xpoints, ypoints, marker = 'o' ,markersize=1,label='4th order Runge-Kutta')
+    plt.xlabel("x",  fontsize=24)
+    plt.ylabel("y",  fontsize=24,)
+    plt.legend(loc='upper left')
+    plt.grid()
+    #plt.xlim(-30,100)
+    #plt.ylim(-30,30)
+    plt.show()
+
+print(a)
