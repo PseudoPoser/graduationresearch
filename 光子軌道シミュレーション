@@ -96,7 +96,7 @@ for i in range(0,N,1):
         j += 1
     a = np.vstack((a,[r0,phi0,w0,np.arctan(w0),y,phi]))
 
-'''グラフの描画　N=1のときのみ推奨'''
+    '''グラフの描画　N=1のときのみ推奨'''
     '''r-φグラフ'''
     plt.plot (phipoints, rpoints, 'o',label='4th order Runge-Kutta')
     plt.xlabel("phi",  fontsize=24)
