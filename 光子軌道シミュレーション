@@ -24,7 +24,7 @@ a = np.array(["r0","phi0","dr/dphi0","arctan(w0)","y_inf","phi_inf"])
 '''繰り返し回数N'''
 N =1
 
-for i in range(0,1,N):
+for i in range(0,N,1):
 
     phipoints = []
     upoints = []
